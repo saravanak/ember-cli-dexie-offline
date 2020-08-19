@@ -190,6 +190,8 @@ export default Service.extend({
         return;
       }
 
+      await this.syncOfflineCachedModels();
+
       const { db, preInitializeQueue } = this;
       for (let { modelName, data } of preInitializeQueue) {
         db[modelName.camelize()].put(data, data.id);
@@ -298,4 +300,5 @@ export default Service.extend({
   dexieIsOnline() {
 
   }
+  async syncOfflineCachedModels() {}
 });
