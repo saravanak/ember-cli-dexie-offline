@@ -30,18 +30,24 @@ export default Service.extend({
     return (config && config.resigeredModels) || [];
   }),
 
+  onlineCallback() {
+    this.dexieIsOnline();
+    this.set('isOnline', true);
+  },
+
+  offlineCallback() {
+    this.set('isOnline', false);
+  },
+
   init() {
     this._super(...arguments);
     const me = this;
 
-    window.addEventListener('online', () => {
-      me.dexieIsOnline();
-      me.set('isOnline', true);
-    });
+    this._onlineCallback = this.onlineCallback.bind(this);
+    this._offlineCallback = this.offlineCallback.bind(this);
 
-    window.addEventListener('offline', () => {
-      me.set('isOnline', false);
-    });
+    window.addEventListener('online', this._onlineCallback);
+    window.addEventListener('offline',  this._offlineCallback);
 
     this.set('isOnline', navigator.onLine);
 
@@ -76,6 +82,14 @@ export default Service.extend({
       [dbListTableName]: '++id'
     });
     this.managerDb.open();
+  },
+
+  async willDestroy() {
+    if(this.db) {
+      await this.db.delete();
+    }
+    window.removeEventListener('online', this._onlineCallback);
+    window.removeEventListener('offline', this._offlineCallback);
   },
 
   async save(type, data) {
