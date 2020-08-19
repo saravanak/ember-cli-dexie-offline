@@ -18,7 +18,6 @@ const configKey = 'ember-cli-dexie-offline';
 export default Service.extend({
   isOnline: false,
   isOffline: not('isOnline'),
-  hasConnection: reads('isOnline'),
 
   bypassIndexedDBSaves: false,
   store: service(),
