@@ -262,6 +262,7 @@ export default Service.extend({
       });
       schema[model.camelize()] = attrs.join(',');
     });
+    await this.postBuildSchema(schema);
     return schema;
   },
 
@@ -298,5 +299,7 @@ export default Service.extend({
 
   dexieIsOnline() { },
 
-  async syncOfflineCachedModels() {}
+  async syncOfflineCachedModels() {},
+
+  async postBuildSchema(schema) { }
 });
