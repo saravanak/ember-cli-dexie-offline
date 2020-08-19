@@ -18,7 +18,7 @@ export default Adapter.extend({
   findAll: async function (store, type) {
     const { db } = this;
     return {
-      data: await db[type.modelName].toArray()
+      data: await db[type.modelName.camelize()].toArray()
     };
   },
 
@@ -29,7 +29,7 @@ export default Adapter.extend({
     }
     const prevPage = isNaN(query.page) || query.page <= 0 ? 0 : query.page - 1;
     const limit = isNaN(query.limit) || query.limit <= 0 ? defaultLimit : query.limit;
-    const whereClause = db[type.modelName];
+    const whereClause = db[type.modelName.camelize()];
     let relation = whereClause.orderBy(':id');
     const noOfRecords = await whereClause.count();
     const totalPages = Math.ceil(noOfRecords / limit);
@@ -64,14 +64,14 @@ export default Adapter.extend({
   async findRecord(store, type, id) {
     const { db } = this;
     return {
-      data: await db[type.modelName].get(id)
+      data: await db[type.modelName.camelize()].get(id)
     };
   },
 
   async findMany(store, type, ids) {
     const { db } = this;
     return {
-      data: await db[type.modelName].bulkGet(ids)
+      data: await db[type.modelName.camelize()].bulkGet(ids)
     };
   }
 });

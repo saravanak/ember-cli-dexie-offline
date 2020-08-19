@@ -106,7 +106,7 @@ export default Service.extend({
           : 'false';
       }
     });
-    db[type.modelName].put(data, data.id);
+    db[type.modelName.camelize()].put(data, data.id);
   },
 
   async updateSingleModel(modelPayload) {
@@ -178,7 +178,7 @@ export default Service.extend({
 
       const { db, preInitializeQueue } = this;
       for (let { modelName, data } of preInitializeQueue) {
-        db[modelName].put(data, data.id);
+        db[modelName.camelize()].put(data, data.id);
       }
     } catch (e) {
       debug('Error while initilazing indexeddb, bailing off', e);
@@ -241,7 +241,7 @@ export default Service.extend({
           attrs.pushObject(indexName);
         }
       });
-      schema[model] = attrs.join(',');
+      schema[model.camelize()] = attrs.join(',');
     });
     return schema;
   },
