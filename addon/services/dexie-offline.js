@@ -296,8 +296,7 @@ export default Service.extend({
     return 'dexie-offline-db';
   },
 
-  dexieIsOnline() {
+  dexieIsOnline() { },
 
-  }
   async syncOfflineCachedModels() {}
 });
