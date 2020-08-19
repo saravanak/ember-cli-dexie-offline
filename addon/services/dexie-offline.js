@@ -135,7 +135,7 @@ export default Service.extend({
   },
 
   async updateResponse(response) {
-    if (this.bypassIndexedDBSaves) {
+    if (this.bypassIndexedDBSaves || isBlank(response)) {
       return;
     }
     if (isArray(response.data)) {
