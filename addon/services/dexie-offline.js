@@ -241,6 +241,9 @@ export default Service.extend({
     this.registeredModels.forEach((model) => {
       const type = this.store.modelFor(model);
       const attrs = [''];
+      if(type.additionalKeys && isArray(type.additionalKeys) ) {
+        attrs.pushObjects(type.additionalKeys);
+      }
       type.eachAttribute((name, meta) => {
         // https://dexie.org/docs/Version/Version.stores()
         /*
