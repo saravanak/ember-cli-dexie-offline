@@ -1,7 +1,7 @@
 ember-cli-dexie-offline
 ==============================================================================
 
-[Short description of the addon.]
+Saves models pushed to the store while onlnie and serves them back when offline. This is WIP now, development done straight from the master branch.
 
 
 Compatibility
@@ -23,7 +23,7 @@ ember install ember-cli-dexie-offline
 Usage
 ------------------------------------------------------------------------------
 
-[Longer description of how to use the addon in apps.]
+(tbd) [Longer description of how to use the addon in apps.]
 
 
 Contributing
