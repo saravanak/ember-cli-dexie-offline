@@ -237,7 +237,7 @@ export default Service.extend({
     });
   },
 
-  buildSchema() {
+  async buildSchema() {
     const schema = {};
     this.registeredModels.forEach((model) => {
       const type = this.store.modelFor(model);
@@ -268,7 +268,7 @@ export default Service.extend({
 
   async initDb(dbName) {
     this.set('db', new Dexie(dbName));
-    this.db.version(1).stores(this.buildSchema());
+    this.db.version(1).stores(await this.buildSchema());
     await this.db.open();
   },
 
