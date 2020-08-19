@@ -250,9 +250,10 @@ export default Service.extend({
          * @attr('boolean', { dexieIndex: true}) isActive;
          *  ... {dexieIndex: { unique: true } email;
          */
-        if (meta.dexieIndex) {
-          let indexName = meta.dexieIndex.as || name;
-          if (meta.dexieIndex.unique) {
+        const { options } = meta;
+        if (options.dexieIndex) {
+          let indexName = options.dexieIndex.as || name;
+          if (options.dexieIndex.unique) {
             indexName = `&${indexName}`;
           }
           attrs.pushObject(indexName);
