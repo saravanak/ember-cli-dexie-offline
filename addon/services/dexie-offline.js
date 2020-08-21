@@ -85,7 +85,7 @@ export default Service.extend({
 
   async willDestroy() {
     if(this.db) {
-      await this.db.delete();
+      this.db.close();
     }
     window.removeEventListener('online', this._onlineCallback);
     window.removeEventListener('offline', this._offlineCallback);
