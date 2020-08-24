@@ -6,12 +6,12 @@ import { getOwner } from '@ember/application';
 import { assign } from '@ember/polyfills';
 import { debug } from '@ember/debug';
 import { inject as service } from '@ember/service';
-import { underscore } from '@ember/string';
-import { isArray } from '@ember/array';
+import { underscore, camelize } from '@ember/string';
+import { isArray, A } from '@ember/array';
 import { all } from 'rsvp';
 import { singularize } from 'ember-inflector';
 import { reads, not } from '@ember/object/computed';
-import { isBlank } from '@ember/utils';
+import { isPresent, isBlank } from '@ember/utils';
 
 const configKey = 'ember-cli-dexie-offline';
 
@@ -22,11 +22,10 @@ export default Service.extend({
   bypassIndexedDBSaves: false,
   store: service(),
 
-  resigeredModels: computed(function () {
-    let config = getOwner(this).resolveRegistration('config:environment')[
+  config: computed(function () {
+    return getOwner(this).resolveRegistration('config:environment')[
       configKey
-    ];
-    return (config && config.resigeredModels) || [];
+    ] || {};
   }),
 
   onlineCallback() {
@@ -50,13 +49,16 @@ export default Service.extend({
 
     this.set('isOnline', navigator.onLine);
 
-    let config = getOwner(this).resolveRegistration('config:environment')[
-      configKey
-    ];
+    const { config } = this;
+
+    const configured = {};
+    Object.keys(config).filter(k => isPresent(config[k])).forEach(k => {
+      configured[k] = config[k];
+    })
 
     this.setProperties({
       syncedForThisRun: false,
-      preInitializeQueue: [],
+      preInitializeQueue: A([]),
       bypassIndexedDBSaves: false,
       ...assign(
         {
@@ -65,12 +67,7 @@ export default Service.extend({
           managerDbName: 'dexie-offline',
           dbListTableName: 'tenants'
         },
-        {
-          registeredModels: config.registeredModels,
-          limit: config.limit,
-          managerDbName: config.managerDbName,
-          dbListTableName: config.dbListTableName
-        }
+        configured
       )
     });
 
@@ -119,7 +116,12 @@ export default Service.extend({
           : 'false';
       }
     });
-    db[type.modelName.camelize()].put(data, data.id);
+    const model = db[camelize(type.modelName)];
+    if(model) {
+      model.put(data, data.id);
+    } else {
+      debug('no model registered in dexie for ', type.modelName);
+    }
   },
 
   async updateSingleModel(modelPayload) {
@@ -129,7 +131,7 @@ export default Service.extend({
     const modelName = singularize(modelPayload.type);
 
     if (modelName) {
-      await this.save(this.store.modelFor(modelName), modelPayload);
+      return this.save(this.store.modelFor(modelName), modelPayload);
     }
   },
 
@@ -138,36 +140,34 @@ export default Service.extend({
       return;
     }
     if (isArray(response.data)) {
-      await all(
-        response.data
-          .map((record) => {
-            if (record && record.type) {
-              return this.updateSingleModel(record);
-            }
-            return null;
-          })
-          .compact()
+      console.log(response.data.compact);
+      const updateResponses = response.data.map((record) => {
+          let result = null;
+          if (record && record.type) {
+            result = this.updateSingleModel(record);
+          }
+          return result;
+        })
+      await all(A(updateResponses).compact()
       );
     } else if (response.data && response.data.type) {
       await this.updateSingleModel(response.data);
     }
     if (isArray(response.included)) {
-      await all(
-        response.included
-          .map((record) => {
-            if (record && record.type) {
-              return this.updateSingleModel(record);
-            }
-            return null;
-          })
-          .compact()
-      );
+      const updateResponses = response.included.map((record) => {
+        let result = null;
+        if (record && record.type) {
+          result = this.updateSingleModel(record);
+        }
+        return result;
+      })
+      await all( A(updateResponses).compact());
     }
   },
 
   dexieAdapterFor(type) {
     const modelAdapter = getOwner(this).lookup(
-      `dexie-adapter:${type.modelName.camelize()}`
+      `dexie-adapter:${camelize(type.modelName)}`
     );
     return modelAdapter ? modelAdapter : this.dexieOfflineAdapter;
   },
@@ -193,7 +193,7 @@ export default Service.extend({
 
       const { db, preInitializeQueue } = this;
       for (let { modelName, data } of preInitializeQueue) {
-        db[modelName.camelize()].put(data, data.id);
+        db[camelize(modelName)].put(data, data.id);
       }
     } catch (e) {
       debug('Error while initilazing indexeddb, bailing off', e);
@@ -227,7 +227,7 @@ export default Service.extend({
     if (isBlank(record)) {
       return record;
     }
-    const modelName = record.type.camelize();
+    const modelName = camelize(record.type);
     const type = this.store.modelFor(singularize(modelName));
 
     type.eachAttribute((name, meta) => {
@@ -241,7 +241,7 @@ export default Service.extend({
     const schema = {};
     this.registeredModels.forEach((model) => {
       const type = this.store.modelFor(model);
-      const attrs = [''];
+      const attrs = A(['']);
       if(type.additionalKeys && isArray(type.additionalKeys) ) {
         attrs.pushObjects(type.additionalKeys);
       }
@@ -257,10 +257,10 @@ export default Service.extend({
           if (options.dexieIndex.unique) {
             indexName = `&${indexName}`;
           }
-          attrs.pushObject(indexName);
+          attrs.pushObject(`attributes.${indexName}`);
         }
       });
-      schema[model.camelize()] = attrs.join(',');
+      schema[camelize(model)] = attrs.join(',');
     });
     await this.postBuildSchema(schema);
     return schema;
@@ -294,7 +294,9 @@ export default Service.extend({
   ignorableModels: [],
 
   async generateDbNameForCurrentSession() {
-    return 'dexie-offline-db';
+    return {
+      id: 'dexie-offline-db'
+    }
   },
 
   dexieIsOnline() { },

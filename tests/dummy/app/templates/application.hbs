@@ -1,3 +1,27 @@
-<h2 id="title">Welcome to Ember</h2>
+<div class="container flex flex-column">
+<h2 id="title">Welcome to the color store</h2>
 
-{{outlet}}
+<div class="font-size-s"> A Demo for offline capability using Dexie </div>
+
+<div class="group group-m group-center margin-s">
+  <LinkTo @tagName="button"
+     disabled={{this.isSyncing}}
+    class="padding-xxs"
+    @activeClass="button-primary"
+    @route="products"> Products
+  </LinkTo>
+  <LinkTo
+    disabled={{this.isSyncing}}
+    @tagName="button"
+    class="padding-xxs"
+    @activeClass="button-primary"
+    @route="orders"> Orders
+  </LinkTo>
+</div>
+
+{{#if this.isSyncing}}
+  <div class="error"> Please wait while we are syncing</div>
+{{else}}
+  {{outlet}}
+{{/if}}
+</div>

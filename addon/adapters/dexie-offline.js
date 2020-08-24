@@ -3,6 +3,8 @@ import { inject as service } from '@ember/service';
 import { reads } from '@ember/object/computed';
 import { isBlank } from '@ember/utils';
 import { isArray } from '@ember/array';
+import { camelize } from '@ember/string';
+import uuid from 'uuid-random';
 
 export default Adapter.extend({
   dexie: service('dexie-offline'),
@@ -15,10 +17,17 @@ export default Adapter.extend({
     console.log('dexie adapter root: dexier service is', this.dexie, 'db is ', this.dexie.db);
   },
 
+  serializeDexieModel(store, type, snapshot) {
+    const result = store.serializerFor(type.modelName).serialize(snapshot);
+    console.log(result.data);
+    result.data.id = uuid();
+    return result;
+  },
+
   findAll: async function (store, type) {
     const { db } = this;
     return {
-      data: await db[type.modelName.camelize()].toArray()
+      data: await db[camelize(type.modelName)].toArray()
     };
   },
 
@@ -29,7 +38,7 @@ export default Adapter.extend({
     }
     const prevPage = isNaN(query.page) || query.page <= 0 ? 0 : query.page - 1;
     const limit = isNaN(query.limit) || query.limit <= 0 ? defaultLimit : query.limit;
-    const whereClause = db[type.modelName.camelize()];
+    const whereClause = db[camelize(type.modelName)];
     let relation = whereClause.orderBy(':id');
     const noOfRecords = await whereClause.count();
     const totalPages = Math.ceil(noOfRecords / limit);
@@ -48,7 +57,7 @@ export default Adapter.extend({
     // from: 1
     // to: 12
     // total: 12
-    return {
+    const result = {
       data: await relation.offset(offset).limit(limit).toArray(),
       meta: {
         current_page: query.page,
@@ -59,19 +68,22 @@ export default Adapter.extend({
         per_page: limit
       }
     };
+
+    console.log(result);
+    return result;
   },
 
   async findRecord(store, type, id) {
     const { db } = this;
     return {
-      data: await db[type.modelName.camelize()].get(id)
+      data: await db[camelize(type.modelName)].get(id)
     };
   },
 
   async findMany(store, type, ids) {
     const { db } = this;
     return {
-      data: await db[type.modelName.camelize()].bulkGet(ids)
+      data: await db[camelize(type.modelName)].bulkGet(ids)
     };
   }
 });

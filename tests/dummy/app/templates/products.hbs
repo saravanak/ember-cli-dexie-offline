@@ -1,0 +1,64 @@
+<h3> We're running a <mark> sale!! </mark> </h3>
+
+Every second order is free! Select a product and choose a quantity to place an order
+
+<div class="group ">
+  <ul>
+{{#each (await this.products) as |product|}}
+<li >
+  {{#let (and this.selectedProduct (not (eq product this.selectedProduct)))
+  (and this.selectedProduct  (eq product this.selectedProduct))
+    as |
+      isNotSelected
+      isSelected|}}
+      <div class="button-group margin-xxs">
+  <button
+     style={{html-safe (concat "background-color:" product.name)}}
+    disabled={{isNotSelected}}
+    class=" color-white button-primary {{if isSelected "border border-color-success"}} "
+    {{on "click" (fn (mut this.selectedProduct) product)}}>
+      {{titleize product.name}}
+  </button>
+  {{#if isSelected}}
+  <button
+    class=" color-white button-error"
+    {{on "click" (fn (mut this.selectedProduct) null)}}>
+    &times;
+  </button>
+  {{/if}}
+  </div>
+  {{/let}}
+  </li>
+{{/each}}
+</ul>
+</div>
+
+{{#if this.selectedProduct}}
+ <form>
+   <p class="field">
+   <label for="form-simple-email">Quantity</label>
+   <select {{on "change" (fn this.onQuantityChange)}}>
+     {{#each (range 1 2) as |optionId|}}
+     <option value={{optionId}} checked={{eq this.quantityForNextOrder optionId}}> {{optionId}} </option>
+     {{/each}}
+    </select>
+   </p>
+   <p class="field">
+   <button type="submit" class="button button-primary" {{on "click" (fn this.createOrder )}}>
+     Place order
+   </button>
+   <button type="reset" class="button">Cancel</button>
+   </p>
+   {{#if this.orderCreationError}}
+   <p class="color-error">{{this.orderCreationError}}</p>
+   {{/if}}
+  </form>
+{{/if}}
+
+{{#if this.error}}
+  <p class="color-error">{{this.error}}</p>
+{{/if}}
+
+{{#if this.recentOrders}}
+<OrderListing @heading="Your recent orders" @orders={{this.recentOrders}}/>
+{{/if}}

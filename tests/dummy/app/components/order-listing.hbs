@@ -1,0 +1,31 @@
+<h2>{{@heading}}</h2>
+<div class="table-responsive">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col"> Order Id</th>
+        <th scope="col">Product</th>
+        <th scope="col">Cost</th>
+        <th scope="col">Hurray?</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each @orders as |order|}}
+        <tr>
+          <td>{{order.id}}</td>
+          <td>
+            <div
+              style={{html-safe (concat "background-color:" product.name)}}
+              >
+              {{order.product.name}}
+            </div>
+          </td>
+          <td>{{order.cost}}</td>
+          <td>{{order.isBumper}}</td>
+          <td>{{order.status}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
