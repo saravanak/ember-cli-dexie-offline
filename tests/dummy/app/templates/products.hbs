@@ -14,8 +14,7 @@ Every second order is free! Select a product and choose a quantity to place an o
       <div class="button-group margin-xxs">
   <button
      style={{html-safe (concat "background-color:" product.name)}}
-    disabled={{isNotSelected}}
-    class=" color-white button-primary {{if isSelected "border border-color-success"}} "
+    class=" color-white button-primary {{if isNotSelected "opacity-15"}} "
     {{on "click" (fn (mut this.selectedProduct) product)}}>
       {{titleize product.name}}
   </button>
