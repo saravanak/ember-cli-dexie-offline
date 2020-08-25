@@ -4,7 +4,7 @@ import { reads } from '@ember/object/computed';
 import { isBlank } from '@ember/utils';
 import { isArray } from '@ember/array';
 import { camelize } from '@ember/string';
-import uuid from 'uuid-random';
+import { v4 as uuid } from 'uuid';
 
 export default Adapter.extend({
   dexie: service('dexie-offline'),
