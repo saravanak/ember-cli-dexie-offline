@@ -69,12 +69,13 @@ export default class extends JSONAPIAdapter{
     }
   }
 
-  async deleteRecord(store, type) {
+  async deleteRecord(store, type, snapshot) {
+    const dexieOfflineAdapter = this.dexieOffline.dexieAdapterFor(type);
     if (this.dexieOffline.isOnline) {
       const result = await super.deleteRecord(...arguments);
+      await dexieOfflineAdapter.deleteRecord(...arguments);
       return result;
     } else {
-      const dexieOfflineAdapter = this.dexieOffline.dexieAdapterFor(type);
       const result = await dexieOfflineAdapter.deleteRecord(...arguments);
       return result;
     }
