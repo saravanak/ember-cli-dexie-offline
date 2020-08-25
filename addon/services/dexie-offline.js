@@ -240,7 +240,7 @@ export default Service.extend({
     const schema = {};
     this.registeredModels.forEach((model) => {
       const type = this.store.modelFor(model);
-      const attrs = A(['']);
+      const attrs = A(['id']);
       if(type.additionalKeys && isArray(type.additionalKeys) ) {
         attrs.pushObjects(type.additionalKeys);
       }
