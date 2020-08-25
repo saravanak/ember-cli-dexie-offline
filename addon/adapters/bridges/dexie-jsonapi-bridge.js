@@ -16,7 +16,6 @@ export default class extends JSONAPIAdapter{
     const result = super.handleResponse(...arguments);
     try {
       if (this.isOnline) {
-        console.log(result);
         await this.dexieOffline.updateResponse(result);
       }
     } catch (e) {
@@ -55,6 +54,28 @@ export default class extends JSONAPIAdapter{
     } else {
       const dexieOfflineAdapter = this.dexieOffline.dexieAdapterFor(type);
       const result = await dexieOfflineAdapter.createRecord(...arguments);
+      return result;
+    }
+  }
+
+  async updateRecord(store, type) {
+    if (this.dexieOffline.isOnline) {
+      const result = await super.updateRecord(...arguments);
+      return result;
+    } else {
+      const dexieOfflineAdapter = this.dexieOffline.dexieAdapterFor(type);
+      const result = await dexieOfflineAdapter.updateRecord(...arguments);
+      return result;
+    }
+  }
+
+  async deleteRecord(store, type) {
+    if (this.dexieOffline.isOnline) {
+      const result = await super.deleteRecord(...arguments);
+      return result;
+    } else {
+      const dexieOfflineAdapter = this.dexieOffline.dexieAdapterFor(type);
+      const result = await dexieOfflineAdapter.deleteRecord(...arguments);
       return result;
     }
   }

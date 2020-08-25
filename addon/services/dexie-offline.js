@@ -140,7 +140,6 @@ export default Service.extend({
       return;
     }
     if (isArray(response.data)) {
-      console.log(response.data.compact);
       const updateResponses = response.data.map((record) => {
           let result = null;
           if (record && record.type) {

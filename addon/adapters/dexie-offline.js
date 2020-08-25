@@ -57,8 +57,9 @@ export default Adapter.extend({
     // from: 1
     // to: 12
     // total: 12
+    const data = await relation.offset(offset).limit(limit).toArray();
     const result = {
-      data: await relation.offset(offset).limit(limit).toArray(),
+      data,
       meta: {
         current_page: query.page,
         from: offset + 1,
