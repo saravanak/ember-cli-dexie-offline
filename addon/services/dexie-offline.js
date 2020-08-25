@@ -231,7 +231,7 @@ export default Service.extend({
 
     type.eachAttribute((name, meta) => {
       if (meta.type === 'boolean') {
-        record.attributes[name] = record.attributes[name] == 'true';
+        record.attributes[underscore(name)] = record.attributes[name] == 'true';
       }
     });
   },
@@ -256,7 +256,7 @@ export default Service.extend({
           if (options.dexieIndex.unique) {
             indexName = `&${indexName}`;
           }
-          attrs.pushObject(`attributes.${indexName}`);
+          attrs.pushObject(`attributes.${underscore(indexName)}`);
         }
       });
       schema[camelize(model)] = attrs.join(',');
