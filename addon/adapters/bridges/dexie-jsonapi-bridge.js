@@ -1,10 +1,9 @@
 import JSONAPIAdapter from '@ember-data/adapter/json-api';
-import { isPresent } from '@ember/utils';
 import { inject as service } from '@ember/service';
 import { reads, not } from '@ember/object/computed';
 import { debug } from '@ember/debug';
 
-export default class extends JSONAPIAdapter{
+export default class extends JSONAPIAdapter {
   @service dexieOffline;
 
   @not('dexieOffline.isOnline') isOffline;
@@ -12,7 +11,7 @@ export default class extends JSONAPIAdapter{
 
   @reads('dexieOffline.bypassIndexedDBSaves') bypassIndexedDBSaves;
 
-  async handleResponse(status, headers, payload) {
+  async handleResponse() {
     const result = super.handleResponse(...arguments);
     try {
       if (this.isOnline) {
@@ -25,7 +24,7 @@ export default class extends JSONAPIAdapter{
     return result;
   }
 
-  async wrapOnlineOffline(wrapperFor, { args }, ){
+  async wrapOnlineOffline(wrapperFor, { args }) {
     let result = null;
     //for now, we hardcode this.
     const type = args[1];
@@ -38,7 +37,7 @@ export default class extends JSONAPIAdapter{
           result = this.dexieOffline.deserialize(type, result);
         }
       } else {
-        result = await  super[wrapperFor](...args);
+        result = await super[wrapperFor](...args);
       }
     } catch (e) {
       debug(`exception on ${wrapperFor} `, e);
@@ -69,7 +68,7 @@ export default class extends JSONAPIAdapter{
     }
   }
 
-  async deleteRecord(store, type, snapshot) {
+  async deleteRecord(store, type) {
     const dexieOfflineAdapter = this.dexieOffline.dexieAdapterFor(type);
     if (this.dexieOffline.isOnline) {
       const result = await super.deleteRecord(...arguments);
@@ -81,19 +80,19 @@ export default class extends JSONAPIAdapter{
     }
   }
 
-  async findAll(store, type) {
-    return this.wrapOnlineOffline('findAll', {args: arguments});
+  async findAll() {
+    return this.wrapOnlineOffline('findAll', { args: arguments });
   }
 
-  async findRecord(store, type) {
-    return this.wrapOnlineOffline('findRecord', {args: arguments});
+  async findRecord() {
+    return this.wrapOnlineOffline('findRecord', { args: arguments });
   }
 
-  async query(store, type, query) {
-    return this.wrapOnlineOffline('query', {args: arguments});
+  async query() {
+    return this.wrapOnlineOffline('query', { args: arguments });
   }
 
-  async queryRecord(store, type, query) {
-    return this.wrapOnlineOffline('queryRecord', {args: arguments});
+  async queryRecord() {
+    return this.wrapOnlineOffline('queryRecord', { args: arguments });
   }
 }

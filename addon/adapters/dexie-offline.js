@@ -1,4 +1,4 @@
-import Adapter from 'ember-data/adapter';
+import Adapter from '@ember-data/adapter';
 import { inject as service } from '@ember/service';
 import { reads } from '@ember/object/computed';
 import { isBlank, isPresent } from '@ember/utils';
@@ -31,7 +31,8 @@ export default Adapter.extend({
       return this.findAll(...arguments);
     }
     const prevPage = isNaN(query.page) || query.page <= 0 ? 0 : query.page - 1;
-    const limit = isNaN(query.limit) || query.limit <= 0 ? defaultLimit : query.limit;
+    const limit =
+      isNaN(query.limit) || query.limit <= 0 ? defaultLimit : query.limit;
     const whereClause = db[camelize(type.modelName)];
     let relation = whereClause.orderBy(':id');
     const noOfRecords = await whereClause.count();
@@ -83,7 +84,7 @@ export default Adapter.extend({
 
   async clearCachedServerModels(type) {
     const dexieTable = this.db[camelize(type.modelName)];
-    if(isPresent(dexieTable)) {
+    if (isPresent(dexieTable)) {
       await dexieTable.clear();
     }
   }

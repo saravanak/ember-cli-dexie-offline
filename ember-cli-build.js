@@ -2,7 +2,7 @@
 
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 
-module.exports = function(defaults) {
+module.exports = function (defaults) {
   let app = new EmberAddon(defaults, {
     'ember-service-worker': {
       registrationStrategy: 'inline',
@@ -17,5 +17,7 @@ module.exports = function(defaults) {
     behave. You most likely want to be modifying `./index.js` or app's build file
   */
   app.import('node_modules/turretcss/dist/turretcss.min.css');
+  app.import('node_modules/reveal.js/dist/reveal.css');
+  app.import('node_modules/reveal.js/dist/theme/white.css');
   return app.toTree();
 };

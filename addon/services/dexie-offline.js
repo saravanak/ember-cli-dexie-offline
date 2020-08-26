@@ -10,7 +10,7 @@ import { underscore, camelize } from '@ember/string';
 import { isArray, A } from '@ember/array';
 import { all } from 'rsvp';
 import { singularize } from 'ember-inflector';
-import { reads, not } from '@ember/object/computed';
+import { not } from '@ember/object/computed';
 import { isPresent, isBlank } from '@ember/utils';
 
 const configKey = 'ember-cli-dexie-offline';
@@ -23,9 +23,9 @@ export default Service.extend({
   store: service(),
 
   config: computed(function () {
-    return getOwner(this).resolveRegistration('config:environment')[
-      configKey
-    ] || {};
+    return (
+      getOwner(this).resolveRegistration('config:environment')[configKey] || {}
+    );
   }),
 
   onlineCallback() {
@@ -39,22 +39,25 @@ export default Service.extend({
 
   init() {
     this._super(...arguments);
-    const me = this;
 
+    //To bypass certain heavy models that you don't want to be cached.
+    this.ignorableModels = [];
     this._onlineCallback = this.onlineCallback.bind(this);
     this._offlineCallback = this.offlineCallback.bind(this);
 
     window.addEventListener('online', this._onlineCallback);
-    window.addEventListener('offline',  this._offlineCallback);
+    window.addEventListener('offline', this._offlineCallback);
 
     this.set('isOnline', navigator.onLine);
 
     const { config } = this;
 
     const configured = {};
-    Object.keys(config).filter(k => isPresent(config[k])).forEach(k => {
-      configured[k] = config[k];
-    })
+    Object.keys(config)
+      .filter((k) => isPresent(config[k]))
+      .forEach((k) => {
+        configured[k] = config[k];
+      });
 
     this.setProperties({
       syncedForThisRun: false,
@@ -81,7 +84,7 @@ export default Service.extend({
   },
 
   async willDestroy() {
-    if(this.db) {
+    if (this.db) {
       this.db.close();
     }
     window.removeEventListener('online', this._onlineCallback);
@@ -117,7 +120,7 @@ export default Service.extend({
       }
     });
     const model = db[camelize(type.modelName)];
-    if(model) {
+    if (model) {
       model.put(data, data.id);
     } else {
       debug('no model registered in dexie for ', type.modelName);
@@ -141,14 +144,13 @@ export default Service.extend({
     }
     if (isArray(response.data)) {
       const updateResponses = response.data.map((record) => {
-          let result = null;
-          if (record && record.type) {
-            result = this.updateSingleModel(record);
-          }
-          return result;
-        })
-      await all(A(updateResponses).compact()
-      );
+        let result = null;
+        if (record && record.type) {
+          result = this.updateSingleModel(record);
+        }
+        return result;
+      });
+      await all(A(updateResponses).compact());
     } else if (response.data && response.data.type) {
       await this.updateSingleModel(response.data);
     }
@@ -159,8 +161,8 @@ export default Service.extend({
           result = this.updateSingleModel(record);
         }
         return result;
-      })
-      await all( A(updateResponses).compact());
+      });
+      await all(A(updateResponses).compact());
     }
   },
 
@@ -173,7 +175,7 @@ export default Service.extend({
 
   isSyncingIndexedDB: false,
   //Just so that this can be overridden, and the host needs async init sequence
-  async syncIndexedDB(){
+  async syncIndexedDB() {
     //We only do this once.
     //Prefer truncating the DB using teh API after forms have been copied over.
 
@@ -242,7 +244,7 @@ export default Service.extend({
     this.registeredModels.forEach((model) => {
       const type = this.store.modelFor(model);
       const attrs = A(['id']);
-      if(type.additionalKeys && isArray(type.additionalKeys) ) {
+      if (type.additionalKeys && isArray(type.additionalKeys)) {
         attrs.pushObjects(type.additionalKeys);
       }
       type.eachAttribute((name, meta) => {
@@ -278,7 +280,6 @@ export default Service.extend({
 
     await this.initDb(dbNameMeta.id);
 
-    const { db } = this;
     const dexieOfflineAdapter = DexieOfflineAdapter.create({}, ownerInjection);
 
     this.setProperties({
@@ -290,26 +291,23 @@ export default Service.extend({
 
   //overridables
 
-  //To bypass certain heavy models that you don't want to be cached.
-  ignorableModels: [],
-
   async generateDbNameForCurrentSession() {
     return {
       id: 'dexie-offline-db'
-    }
+    };
   },
 
-  dexieIsOnline() { },
+  dexieIsOnline() {},
 
   async syncOfflineCachedModels() {},
 
   async clearExistingData() {
-    for(let modelSlug of this.registeredModels){
+    for (let modelSlug of this.registeredModels) {
       const type = this.store.modelFor(modelSlug);
       const dexieAdapter = this.dexieAdapterFor(type);
       await dexieAdapter.clearCachedServerModels(type);
     }
   },
 
-  async postBuildSchema(schema) { }
+  async postBuildSchema(/*schema*/) {}
 });
