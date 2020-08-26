@@ -14,7 +14,7 @@ export default class ProductsController extends Controller {
   @tracked selectedProduct = null;
   @tracked quantityForNextOrder = 1;
   @tracked orderCreationError = null;
-  @alias('dexieOffline.recentOrders') recentOrders ;
+  @alias('dexieOffline.recentOrders') recentOrders;
 
   constructor() {
     super(...arguments);
@@ -46,7 +46,7 @@ export default class ProductsController extends Controller {
       this.orderCreationError = e;
     });
     if (order.id) {
-      this.dexieOffline.db._recentOrders.put({id: order.id});
+      this.dexieOffline.db._recentOrders.put({ id: order.id });
       this.recentOrders.pushObject(...[order]);
     }
   }
@@ -55,7 +55,7 @@ export default class ProductsController extends Controller {
     this.loadProducts();
   }
 
-  @action async clearRecentOrders () {
+  @action async clearRecentOrders() {
     this.dexieOffline.clearRecentOrders();
   }
 }

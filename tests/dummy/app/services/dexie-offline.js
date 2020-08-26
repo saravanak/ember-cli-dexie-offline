@@ -26,7 +26,7 @@ export default class extends DexieOfflineService {
           (p) => p.id == syncedOrder.relationships.product.data.id
         );
         await createdOrder.save();
-        await this.db._recentOrders.put({id: createdOrder.id});
+        await this.db._recentOrders.put({ id: createdOrder.id });
       }
     } catch (e) {
       console.error(e);
@@ -40,20 +40,22 @@ export default class extends DexieOfflineService {
   }
 
   async postBuildSchema(schema) {
-    schema._recentOrders = 'id'
+    schema._recentOrders = 'id';
   }
 
-  async clearExistingData(){
+  async clearExistingData() {
     await super.clearExistingData();
   }
 
   async primeStore() {
-    const recentOrderIds = await this.db._recentOrders.toCollection().primaryKeys();
+    const recentOrderIds = await this.db._recentOrders
+      .toCollection()
+      .primaryKeys();
     try {
-      if(recentOrderIds.length > 0) {
+      if (recentOrderIds.length > 0) {
         this.recentOrders = await this.store.query('order', {
           filter: {
-            id: recentOrderIds.join(','),
+            id: recentOrderIds.join(',')
           }
         });
       } else {
@@ -63,7 +65,9 @@ export default class extends DexieOfflineService {
       console.log(e);
     } finally {
       const loadedOrderIds = this.recentOrders.mapBy('id');
-      const missingOrderIds = A(recentOrderIds).reject(id => loadedOrderIds.includes(id));
+      const missingOrderIds = A(recentOrderIds).reject((id) =>
+        loadedOrderIds.includes(id)
+      );
       this.db._recentOrders.bulkDelete(missingOrderIds);
     }
     this.recentOrders = A(this.recentOrders.toArray());
@@ -73,6 +77,4 @@ export default class extends DexieOfflineService {
     await this.db._recentOrders.clear();
     await this.primeStore();
   }
-
-
 }

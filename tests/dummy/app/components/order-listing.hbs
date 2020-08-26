@@ -28,7 +28,9 @@
           <td>
             {{order.id}}
             {{#if order.isCreatedOffline}}
-              <div class="color-info-500 font-weight-bold text-align-center">[Via Offline] </div>
+              <div class="color-info-500 font-weight-bold text-align-center">
+                [Via Offline]
+              </div>
             {{/if}}
           </td>
           <td>
@@ -41,7 +43,7 @@
               {{order.product.name}}
             </div>
           </td>
-          <td >
+          <td>
             {{order.quantity}} Nos / $ {{or order.cost "N/A"}}
           </td>
           <td>

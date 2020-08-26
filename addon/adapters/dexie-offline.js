@@ -85,7 +85,7 @@ export default Adapter.extend({
   async findBelongsTo(store, snapshot, url) {
     const relation = url.split('/')[3];
     const { db } = this;
-    const parentModel =  await db[camelize(snapshot.modelName)].get(snapshot.id);
+    const parentModel = await db[camelize(snapshot.modelName)].get(snapshot.id);
 
     const relationId = parentModel.relationships[relation].data.id;
     return {

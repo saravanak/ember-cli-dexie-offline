@@ -291,42 +291,41 @@
         </p>
       </section>
 
-      {{#each (array
-        (hash
-        url="https://pipeapp.co.za/"
-        name="Pipe"
-        label="Team which allowed me to extract the addon from their works"
-        )
-        (hash
-        url="https://revealjs.com/"
-        name="Reveal.js"
-        label="For powering this slideshow"
-        )
-        (hash
-        url="https://emberjs.com/"
-        name="EmberJS"
-        label="For giving me fun and the great ecosystem over the years"
-        )
-        (hash
-        url="https://github.com/holidayextras/jsonapi-server"
-        name="jsonapi-server"
-        label="For the mock in-memory server"
-        )
-
-        ) as |thanksList|}}
-
-      <section>
-        <h3>
-          Thanks
-        </h3>
-        <p>
-        <a href={{thanksList.url}}>
-          {{thanksList.name}}
-        </a>
-        {{thanksList.label}}
-        </p>
-      </section>
-
+      {{#each
+        (array
+          (hash
+            url="https://pipeapp.co.za/"
+            name="Pipe"
+            label="Team which allowed me to extract the addon from their works"
+          )
+          (hash
+            url="https://revealjs.com/"
+            name="Reveal.js"
+            label="For powering this slideshow"
+          )
+          (hash
+            url="https://emberjs.com/"
+            name="EmberJS"
+            label="For giving me fun and the great ecosystem over the years"
+          )
+          (hash
+            url="https://github.com/holidayextras/jsonapi-server"
+            name="jsonapi-server"
+            label="For the mock in-memory server"
+          )
+        ) as |thanksList|
+      }}
+        <section>
+          <h3>
+            Thanks
+          </h3>
+          <p>
+            <a href={{thanksList.url}}>
+              {{thanksList.name}}
+            </a>
+            {{thanksList.label}}
+          </p>
+        </section>
       {{/each}}
     </div>
   </div>
