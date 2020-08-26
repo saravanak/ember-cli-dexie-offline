@@ -187,10 +187,12 @@ export default Service.extend({
       this.set('isSyncingIndexedDB', true);
       if (this.isOffline) {
         this.set('syncedForThisRun', true);
+        await this.primeStore();
         return;
       }
 
       await this.syncOfflineCachedModels();
+      await this.primeStore();
       await this.clearExistingData();
 
       const { db, preInitializeQueue } = this;
@@ -300,6 +302,7 @@ export default Service.extend({
   dexieIsOnline() {},
 
   async syncOfflineCachedModels() {},
+  async primeStore() {},
 
   async clearExistingData() {
     for (let modelSlug of this.registeredModels) {

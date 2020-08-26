@@ -88,6 +88,10 @@ export default class extends JSONAPIAdapter {
     return this.wrapOnlineOffline('findRecord', { args: arguments });
   }
 
+  async findBelongsTo() {
+    return this.wrapOnlineOffline('findBelongsTo', { args: arguments });
+  }
+
   async query() {
     return this.wrapOnlineOffline('query', { args: arguments });
   }

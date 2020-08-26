@@ -82,6 +82,17 @@ export default Adapter.extend({
     };
   },
 
+  async findBelongsTo(store, snapshot, url) {
+    const relation = url.split('/')[3];
+    const { db } = this;
+    const parentModel =  await db[camelize(snapshot.modelName)].get(snapshot.id);
+
+    const relationId = parentModel.relationships[relation].data.id;
+    return {
+      data: await db[camelize(relation)].get(relationId)
+    };
+  },
+
   async clearCachedServerModels(type) {
     const dexieTable = this.db[camelize(type.modelName)];
     if (isPresent(dexieTable)) {
