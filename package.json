@@ -53,6 +53,7 @@
     "ember-resolver": "^8.0.0",
     "ember-service-worker": "^0.8.4",
     "ember-service-worker-asset-cache": "^0.6.4",
+    "ember-service-worker-cache-fallback": "^0.6.2",
     "ember-service-worker-index": "^0.7.0",
     "ember-source": "~3.19.0",
     "ember-source-channel-url": "^2.0.1",

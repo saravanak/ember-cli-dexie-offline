@@ -7,6 +7,15 @@ module.exports = function (defaults) {
     'ember-service-worker': {
       registrationStrategy: 'inline',
       enabled: true
+    },
+    'esw-cache-fallback': {
+      patterns: [
+        'https://emberjs.com/images/brand/ember_Ember-Light.png',
+        'https://love2dev.com/img/basic-service-worker-caching-980x552.jpg'
+      ],
+
+      // changing this version number will bust the cache
+      version: '1'
     }
   });
 
