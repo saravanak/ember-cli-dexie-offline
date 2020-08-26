@@ -189,6 +189,7 @@ export default Service.extend({
       }
 
       await this.syncOfflineCachedModels();
+      await this.clearExistingData();
 
       const { db, preInitializeQueue } = this;
       for (let { modelName, data } of preInitializeQueue) {
@@ -301,6 +302,16 @@ export default Service.extend({
   dexieIsOnline() { },
 
   async syncOfflineCachedModels() {},
+
+  async clearExistingData() {
+    for(let modelSlug of this.registeredModels){
+      const type = this.store.modelFor(modelSlug);
+      const dexieTable = this.db[camelize(type.modelName)];
+      if(isPresent(dexieTable)) {
+        await dexieTable.clear();
+      }
+    }
+  },
 
   async postBuildSchema(schema) { }
 });
