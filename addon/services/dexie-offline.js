@@ -306,10 +306,8 @@ export default Service.extend({
   async clearExistingData() {
     for(let modelSlug of this.registeredModels){
       const type = this.store.modelFor(modelSlug);
-      const dexieTable = this.db[camelize(type.modelName)];
-      if(isPresent(dexieTable)) {
-        await dexieTable.clear();
-      }
+      const dexieAdapter = this.dexieAdapterFor(type);
+      await dexieAdapter.clearCachedServerModels(type);
     }
   },
 

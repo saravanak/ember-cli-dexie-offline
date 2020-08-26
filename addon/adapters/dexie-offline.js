@@ -1,7 +1,7 @@
 import Adapter from 'ember-data/adapter';
 import { inject as service } from '@ember/service';
 import { reads } from '@ember/object/computed';
-import { isBlank } from '@ember/utils';
+import { isBlank, isPresent } from '@ember/utils';
 import { isArray } from '@ember/array';
 import { camelize } from '@ember/string';
 import { v4 as uuid } from 'uuid';
@@ -79,5 +79,12 @@ export default Adapter.extend({
     return {
       data: await db[camelize(type.modelName)].bulkGet(ids)
     };
+  },
+
+  async clearCachedServerModels(type) {
+    const dexieTable = this.db[camelize(type.modelName)];
+    if(isPresent(dexieTable)) {
+      await dexieTable.clear();
+    }
   }
 });
