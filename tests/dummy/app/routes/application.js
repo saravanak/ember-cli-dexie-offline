@@ -4,7 +4,7 @@ import { inject as service } from '@ember/service';
 export default class extends Route {
   @service dexieOffline;
 
-  beforeModel(){
+  beforeModel() {
     return this.dexieOffline.initializeOfflineDb();
   }
 }

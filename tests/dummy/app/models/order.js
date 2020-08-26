@@ -4,5 +4,6 @@ export default class OrderBookModel extends Model {
   @belongsTo product;
   @attr cost;
   @attr isBumper;
-  @attr({ dexieIndex: true}) status;
+  @attr('boolean') isCreatedOffline;
+  @attr({ dexieIndex: true }) status;
 }

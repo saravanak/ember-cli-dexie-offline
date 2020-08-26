@@ -2,32 +2,32 @@ import Controller from '@ember/controller';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
-import { isArray, A } from '@ember/array';
+import { A } from '@ember/array';
+import { alias } from '@ember/object/computed';
 
 export default class ProductsController extends Controller {
   @service store;
+  @service dexieOffline;
 
   @tracked products;
   @tracked error;
   @tracked selectedProduct = null;
   @tracked quantityForNextOrder = 1;
   @tracked orderCreationError = null;
-  @tracked recentOrders = null
+  @alias('dexieOffline.recentOrders') recentOrders ;
 
-  constructor(){
+  constructor() {
     super(...arguments);
     this.loadProducts();
-    this.recentOrders = A([]);
   }
 
   async loadProducts() {
     try {
       this.error = null;
-      this.products = await this.store.findAll('product', {reload: true})
+      this.products = await this.store.findAll('product', { reload: true });
     } catch (e) {
-      console.log(e);
       this.products = null;
-      this.error = 'We are offline'
+      this.error = e.message;
     }
   }
 
@@ -42,15 +42,20 @@ export default class ProductsController extends Controller {
       quantity: this.quantityForNextOrder
     });
     this.orderCreationError = null;
-    await order.save().catch(e => {
+    await order.save().catch((e) => {
       this.orderCreationError = e;
     });
-    if(order.id) {
-      this.recentOrders.pushObject(order);
+    if (order.id) {
+      this.dexieOffline.db._recentOrders.put({id: order.id});
+      this.recentOrders.pushObject(...[order]);
     }
   }
 
   @action async refetchProducts() {
     this.loadProducts();
+  }
+
+  @action async clearRecentOrders () {
+    this.dexieOffline.clearRecentOrders();
   }
 }

@@ -1,0 +1,321 @@
+<div style={{html-safe "display:grid;place-items:center"}}>
+  <div class="reveal color-grey-700" style={{html-safe "height:70vh;"}}>
+    <div class="slides color-grey-700" style={{html-safe "text-align: left"}}>
+      <section>
+        <h3>
+          Offline Ember
+        </h3>
+        <p class="text-right" style={{html-safe "font-size: 1em;"}}>
+          using SW, Dexie and friends
+        </p>
+      </section>
+
+      <section class="text-align-left">
+        <h3>
+          Service Workers
+        </h3>
+        <i>
+          Unlocking the offline web
+        </i>
+        <img
+          alt="service-worker-explanation"
+          src="https://love2dev.com/img/basic-service-worker-caching-980x552.jpg"
+          style={{html-safe "width:75%"}}
+        />
+
+        <a
+          href="https://love2dev.com/img/basic-service-worker-caching-980x552.jpg"
+          style={{html-safe "text-align:left"}}
+        >
+          Source
+        </a>
+      </section>
+
+      <section style={{html-safe "font-size: 0.5em"}}>
+        <table>
+          <thead>
+            <tr>
+              <th>
+                Request Type
+              </th>
+              <th>
+                <small>
+                  (can be)
+                </small>
+                Handled by
+              </th>
+              <th>
+                Examples
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                Index page
+              </td>
+              <td>
+                ember-service-worker-index
+              </td>
+              <td>
+                index.html,
+                <a href="http://www.example.com/foo">
+                  www.example.com/foo
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                assets
+              </td>
+              <td>
+                ember-service-worker-asset-cache
+              </td>
+              <td>
+                static assets in
+                <code>
+                  public
+                </code>
+                folder
+              </td>
+            </tr>
+            <tr>
+              <td>
+                GET api
+              </td>
+              <td>
+                ember-service-worker-cache-fallback
+              </td>
+              <td>
+                <code>
+                  api
+                </code>
+                requests like
+                <code>
+                  posts/1
+                </code>
+                ,
+                <code>
+                  order/
+                </code>
+                , etc/
+              </td>
+            </tr>
+            <tr>
+              <td>
+                API Mutations
+              </td>
+              <td>
+                <span class="color-error">
+                  ???
+                </span>
+              </td>
+              <td>
+                <code>
+                  CREATE posts
+                </code>
+                ,
+                <code>
+                  DELETE order
+                </code>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h3>
+          POST/DELETE/PUT
+        </h3>
+        <p>
+          Can't be cached
+        </p>
+        <p>
+          Fall free when no net.
+        </p>
+        <p>
+          We need an intelligent proxy server
+        </p>
+        <p>
+          Enter indexed db.
+        </p>
+      </section>
+
+      <section>
+        <h3>
+          Our Dexie Offline Adapter
+        </h3>
+        <p>
+          Cache
+          <code>
+            GET
+          </code>
+          Requests
+        </p>
+        <p>
+          <i>
+            mimic
+          </i>
+
+          <code>
+            POST/PUT/DELETE
+          </code>
+        </p>
+        <p>
+          Sync back while online [Your code; hook provided]
+        </p>
+      </section>
+
+      <section>
+        <h3>
+          Caveats / Antipatterns / Shooting yourself on your foot
+        </h3>
+        <p>
+          Complex processing on server
+        </p>
+        <p>
+          Complex relations
+        </p>
+        <p>
+          Multi owner objects.
+        </p>
+        <p>
+          Syncing multiple versions
+        </p>
+      </section>
+
+      <section>
+        <h3>
+          Use cases
+        </h3>
+        <p>
+          Drafting complex data
+        </p>
+        <p>
+          Filling forms
+        </p>
+        <p>
+          Showing a simple dashboard
+        </p>
+        <p>
+          Flag changes on objects
+        </p>
+        <p>
+          Full CRUD on single owner resources: settings/ notifications , etc.
+        </p>
+      </section>
+
+      <section>
+        <h3>
+          Gotchas
+        </h3>
+        <p>
+          No join queries in Dexie (AFAIK)
+        </p>
+        <p>
+          No indexing support for boolean types
+        </p>
+        <p>
+          Rudimentray querying support
+        </p>
+        <p>
+          Indexed DB might be full!
+        </p>
+      </section>
+
+      <section>
+        <h3>
+          Next Steps
+        </h3>
+        <p class="color-error">
+          STRICTLY BETA; NO GUARANTEES
+        </p>
+        <small>
+          Very Long Term Goals aka (will do if it evokes interest)
+        </small>
+        <p>
+          Resolve DAG from relation graph to arrive order for sync requests
+        </p>
+        <p>
+          Base components for sync UI
+        </p>
+        <p>
+          Testing
+        </p>
+      </section>
+
+      <section>
+        <h3>
+          Learning
+        </h3>
+        <p>
+          Ember Ecosystem Rocks!
+        </p>
+        <p>
+          Started off as an in-repo addon
+        </p>
+      </section>
+
+      <section>
+        <h3>
+          Alternatives
+        </h3>
+        <p>
+          ember-pouch-relation [comes with couch sync]
+        </p>
+      </section>
+
+      <section>
+        <h3>
+          Who am i?
+        </h3>
+        <p>
+          Saro @ Saravana from Coimbatore, India [IST] [GMT+5:30]
+        </p>
+        <p>
+          <span class="color-error">
+            Plug:
+          </span>
+          Author of
+          <a href="https://wings.oldweaver.co.in">
+            Wings
+          </a>
+        </p>
+        <p>
+          Ember Dev for last 4 years
+        </p>
+        <p>
+          Available for hire
+        </p>
+      </section>
+
+      <section>
+        <h3>
+          Thanks
+        </h3>
+        <p>
+          <a href="https://pipeapp.co.za/">
+            Pipe
+          </a>
+          Team which allowed me to extract the addon from their works
+        </p>
+        <p>
+          <a href="https://revealjs.com/">
+            Reveal.js
+          </a>
+          For powering this slideshow
+        </p>
+        <img
+          alt="ember"
+          src="https://emberjs.com/images/brand/ember_Ember-Light.png"
+          style={{html-safe "width:50%"}}
+        />
+        For giving me fun and the great ecosystem over the years
+      </section>
+    </div>
+  </div>
+</div>
+<div {{did-insert this.initSlides}}>
+</div>

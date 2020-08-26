@@ -1,5 +1,5 @@
 import OrderAdapter from './order-adapter';
 
-export default  {
+export default {
   order: OrderAdapter
-}
+};

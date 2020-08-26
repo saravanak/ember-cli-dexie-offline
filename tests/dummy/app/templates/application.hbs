@@ -1,34 +1,68 @@
-
-<nav class="nav-inline text-align-right padding-s">
+<OnlineStatus />
+<nav
+  class="nav-inline text-align-right padding-s"
+  style={{html-safe "padding-top: 3rem;"}}
+>
   <ul>
     <li>
-      <LinkTo @tagName="button"
-      disabled={{this.isSyncing}}
-      class="padding-xxs"
-      @activeClass="button-primary"
-      @route="products"> Products
+      <LinkTo
+        @tagName="button"
+        class="padding-xxs"
+        @activeClass="button-primary"
+        @route="index"
+      >
+        Help
       </LinkTo>
     </li>
     <li>
-
       <LinkTo
-      disabled={{this.isSyncing}}
-      @tagName="button"
-      class="padding-xxs"
-      @activeClass="button-primary"
-      @route="orders"> Orders
+        @tagName="button"
+        disabled={{this.isSyncing}}
+        class="padding-xxs"
+        @activeClass="button-primary"
+        @route="products"
+      >
+        Products
+      </LinkTo>
+    </li>
+    <li>
+      <LinkTo
+        disabled={{this.isSyncing}}
+        @tagName="button"
+        class="padding-xxs"
+        @activeClass="button-primary"
+        @route="orders"
+      >
+        Orders
+      </LinkTo>
+    </li>
+    <li>
+      <LinkTo
+        disabled={{this.isSyncing}}
+        @tagName="button"
+        class="padding-xxs"
+        @activeClass="button-primary"
+        @route="slides"
+      >
+        Slides
       </LinkTo>
     </li>
   </ul>
 </nav>
 <div class="container flex flex-column">
-  <h2 id="title">Welcome to the color store</h2>
+  <h2 id="title">
+    Welcome to the color store
+  </h2>
 
-  <div class="font-size-s"> A Demo for offline capability using Dexie </div>
+  <div class="font-size-s">
+    A Demo for offline capability using Dexie
+  </div>
 
-{{#if this.isSyncing}}
-  <div class="error"> Please wait while we are syncing</div>
-{{else}}
-  {{outlet}}
-{{/if}}
+  {{#if this.isSyncing}}
+    <div class="error">
+      Please wait while we are syncing
+    </div>
+  {{else}}
+    {{outlet}}
+  {{/if}}
 </div>
