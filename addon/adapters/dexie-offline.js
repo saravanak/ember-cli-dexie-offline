@@ -12,14 +12,8 @@ export default Adapter.extend({
   store: reads('dexie.store'),
   defaultLimit: reads('dexie.limit'),
 
-  init() {
-    this._super(...arguments);
-    console.log('dexie adapter root: dexier service is', this.dexie, 'db is ', this.dexie.db);
-  },
-
   serializeDexieModel(store, type, snapshot) {
     const result = store.serializerFor(type.modelName).serialize(snapshot);
-    console.log(result.data);
     result.data.id = uuid();
     return result;
   },
@@ -70,7 +64,6 @@ export default Adapter.extend({
       }
     };
 
-    console.log(result);
     return result;
   },
 
