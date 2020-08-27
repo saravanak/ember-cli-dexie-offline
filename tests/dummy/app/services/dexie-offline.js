@@ -41,6 +41,7 @@ export default class extends DexieOfflineService {
 
   async postBuildSchema(schema) {
     schema._recentOrders = 'id';
+    schema._slides = 'id';
   }
 
   async clearExistingData() {

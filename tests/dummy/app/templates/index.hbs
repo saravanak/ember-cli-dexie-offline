@@ -8,19 +8,25 @@
     <LinkTo @route="products">
       Raise some orders
     </LinkTo>
+    <p>
+    Orders created while offline will be recreated on the server when switching back online.
+    </p>
   </li>
 
   <li>
     <LinkTo @route="orders">
-      Review the orders
+      Review the orders.
     </LinkTo>
   </li>
 
   <li>
-    You can do both the above steps while you are offline.
-    <span class="color color-success font-weight-bold">
+    This app is offline capable.
+    <p>
+    You can use the <b> Refresh </b> button to refresh the app anytime. Refresh also works while you are offline.
+    <span class="color-success font-weight-bold">
       tada
     </span>
+    </p>
   </li>
 </ul>
 
