@@ -1,1 +1,10 @@
-<div id="status" {{did-insert this.init}}></div>
+<div id="status" {{did-insert this.init}}
+     class="flex align-items-center justify-content-space-between {{if this.isOnline "online" "offline"}}">
+  <div>{{this.status}} </div>
+
+  <div class="color-white"> https://ember-cli-dexie-offline.github.io </div>
+
+  <button class="button button-xxs background-info-100" type="button" {{on "click" this.refreshWindow}}>
+    Refresh
+  </button>
+</div>
