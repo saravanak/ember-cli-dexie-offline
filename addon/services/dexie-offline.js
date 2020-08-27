@@ -12,8 +12,15 @@ import { all } from 'rsvp';
 import { singularize } from 'ember-inflector';
 import { not } from '@ember/object/computed';
 import { isPresent, isBlank } from '@ember/utils';
+import EmberObject from '@ember/object';
 
 const configKey = 'ember-cli-dexie-offline';
+
+const StorageEstimateHolder = EmberObject.extend({
+ free: computed('usage', 'quota', function() {
+   return this.quota - this.usage;
+ })
+})
 
 export default Service.extend({
   isOnline: false,
@@ -62,7 +69,6 @@ export default Service.extend({
     this.setProperties({
       syncedForThisRun: false,
       preInitializeQueue: A([]),
-      bypassIndexedDBSaves: false,
       ...assign(
         {
           registeredModels: [],
@@ -73,6 +79,15 @@ export default Service.extend({
         configured
       )
     });
+  },
+
+  async initializeDexieManagerInstance() {
+    const shouldManageOffline = await this.shouldManageOffline();
+
+    this.setProperties({ bypassIndexedDBSaves: !shouldManageOffline});
+    if(this.bypassIndexedDBSaves) {
+      return;
+    }
 
     const { managerDbName, dbListTableName } = this;
 
@@ -277,6 +292,12 @@ export default Service.extend({
   },
 
   async initializeOfflineDb() {
+    await this.initializeDexieManagerInstance();
+
+    if(this.bypassIndexedDBSaves) {
+      return;
+    }
+
     const ownerInjection = getOwner(this).ownerInjection();
     const dbNameMeta = await this.generateDbNameForCurrentSession();
 
@@ -291,7 +312,20 @@ export default Service.extend({
     await this.syncIndexedDB();
   },
 
+  async getStorageEstimates() {
+    if (navigator.storage && navigator.storage.estimate) {
+      this.estimation = StorageEstimateHolder.create(await navigator.storage.estimate(), getOwner(this).ownerInjection());
+    } else {
+      this.estimation = null;
+    }
+  },
+
   //overridables
+
+  //This is the opportunity to find if we have the right space limits and then
+  //decide to handover to dexie to manage offline state.
+
+  async shouldManageOffline() { return true; },
 
   async generateDbNameForCurrentSession() {
     return {
