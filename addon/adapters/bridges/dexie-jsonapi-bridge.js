@@ -72,7 +72,9 @@ export default class extends JSONAPIAdapter {
     const dexieOfflineAdapter = this.dexieOffline.dexieAdapterFor(type);
     if (this.dexieOffline.isOnline) {
       const result = await super.deleteRecord(...arguments);
-      await dexieOfflineAdapter.deleteRecord(...arguments);
+      if(!this.dexieOffline.bypassIndexedDBSaves) {
+        await dexieOfflineAdapter.deleteRecord(...arguments);
+      }
       return result;
     } else {
       const result = await dexieOfflineAdapter.deleteRecord(...arguments);

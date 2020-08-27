@@ -98,5 +98,9 @@ export default Adapter.extend({
     if (isPresent(dexieTable)) {
       await dexieTable.clear();
     }
+  },
+
+  async deleteRecord(store, type, snapshot) {
+    await this.db[camelize(type.modelName)].delete(snapshot.id);
   }
 });
