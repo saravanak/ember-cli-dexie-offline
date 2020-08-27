@@ -121,6 +121,9 @@ export default Service.extend({
   },
 
   async saveToDexie(type, data) {
+    if(this.bypassIndexedDBSaves) {
+      return;
+    }
     const { db } = this;
 
     /* NB:
