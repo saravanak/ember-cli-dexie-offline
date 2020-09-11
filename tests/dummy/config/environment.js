@@ -49,6 +49,8 @@ module.exports = function (environment) {
 
   if (environment === 'production') {
     // here you can enable a production-specific feature
+    ENV.APP.host = 'http://localhost:3300';
+    ENV.rootURL = 'ember-cli-dexie-offline';
   }
 
   return ENV;
