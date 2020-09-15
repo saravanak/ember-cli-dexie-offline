@@ -92,11 +92,15 @@ export default Service.extend({
     const { managerDbName, dbListTableName } = this;
 
     this.set('managerDb', new Dexie(managerDbName));
-    this.managerDb.version(1).stores({
+    const managerSchema ={
       [dbListTableName]: '++id'
-    });
+    }
+    this.managerDb.version(1).stores(managerSchema);
+    await this.postBuildManagerSchema(1);
     this.managerDb.open();
   },
+
+  async postBuildManagerSchema() { },
 
   async willDestroy() {
     if (this.db) {
