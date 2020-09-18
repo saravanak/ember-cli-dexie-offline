@@ -299,24 +299,33 @@ export default Service.extend({
   },
 
   async initializeOfflineDb() {
-    await this.initializeDexieManagerInstance();
+    try{
+      this.setProperties({
+        isSyncingIndexedDB: false,
+        syncedForThisRun: true
+      });
+      await this.initializeDexieManagerInstance();
 
-    if(this.bypassIndexedDBSaves) {
-      return;
+      if(this.bypassIndexedDBSaves) {
+        return;
+      }
+
+      const ownerInjection = getOwner(this).ownerInjection();
+      const dbNameMeta = await this.generateDbNameForCurrentSession();
+
+      await this.initDb(dbNameMeta.id);
+
+      const dexieOfflineAdapter = DexieOfflineAdapter.create({}, ownerInjection);
+
+      this.setProperties({
+        dexieOfflineAdapter,
+        dbNameMeta
+      });
+      await this.syncIndexedDB();
+    } catch(e) {
+      debug('Error while initilazing indexeddb, bailing off', e);
+      this.set('bypassIndexedDBSaves', true);
     }
-
-    const ownerInjection = getOwner(this).ownerInjection();
-    const dbNameMeta = await this.generateDbNameForCurrentSession();
-
-    await this.initDb(dbNameMeta.id);
-
-    const dexieOfflineAdapter = DexieOfflineAdapter.create({}, ownerInjection);
-
-    this.setProperties({
-      dexieOfflineAdapter,
-      dbNameMeta
-    });
-    await this.syncIndexedDB();
   },
 
   async getStorageEstimates() {
